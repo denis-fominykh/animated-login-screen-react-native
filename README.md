@@ -1,5 +1,7 @@
 # The Animated Login Screen
 
+![srcreens](./assets/devices_screens.png)
+
 This project was bootstrapped with [Expo](https://expo.io/).
 
 ## How to use it?
