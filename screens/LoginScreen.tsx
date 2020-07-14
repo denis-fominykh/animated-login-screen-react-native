@@ -1,12 +1,6 @@
 import React, { Component } from 'react';
-import {
-  StyleSheet,
-  Image,
-  Text,
-  View,
-  TextInput,
-  Dimensions,
-} from 'react-native';
+import { StyleSheet, Text, View, TextInput, Dimensions } from 'react-native';
+import Svg, { Image, Circle, ClipPath } from 'react-native-svg';
 import Animated from 'react-native-reanimated';
 import { State, TapGestureHandler } from 'react-native-gesture-handler';
 
@@ -60,7 +54,7 @@ class LoginScreen extends Component {
 
   backgroundY = interpolate(this.buttonOpacity, {
     inputRange: [0, 1],
-    outputRange: [-height / 3, 0],
+    outputRange: [-height / 3 - 50, 0],
     extrapolate: Extrapolate.CLAMP,
   });
 
@@ -97,10 +91,18 @@ class LoginScreen extends Component {
             transform: [{ translateY: this.backgroundY }],
           }}
         >
-          <Image
-            source={require('../assets/background.jpg')}
-            style={styles.image}
-          />
+          <Svg height={height + 50} width={width}>
+            <ClipPath id="clip">
+              <Circle r={height + 50} cx={width / 2} />
+            </ClipPath>
+            <Image
+              href={require('../assets/background.jpg')}
+              height={height + 50}
+              width={width}
+              preserveAspectRatio="xMidYMid slice"
+              clipPath="url(#clip)"
+            />
+          </Svg>
         </Animated.View>
         <View style={styles.buttonContainer}>
           <TapGestureHandler onHandlerStateChange={this.onStateChange}>
@@ -174,11 +176,6 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     ...(StyleSheet.absoluteFill as {}),
-  },
-  image: {
-    flex: 1,
-    height: 'auto',
-    width: 'auto',
   },
   buttonContainer: {
     height: Dimensions.get('window').height / 3,
