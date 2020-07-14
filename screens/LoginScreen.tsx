@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Image, Text, View, Dimensions } from 'react-native';
+import { StyleSheet, Image, Text, View, TextInput, Dimensions } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { State, TapGestureHandler } from 'react-native-gesture-handler';
 
@@ -44,6 +44,24 @@ class LoginScreen extends Component {
     extrapolate: Extrapolate.CLAMP,
   });
 
+  textInputZIndex = interpolate(this.buttonOpacity, {
+    inputRange: [0, 1],
+    outputRange: [1, -1],
+    extrapolate: Extrapolate.CLAMP,
+  });
+
+  textInputY = interpolate(this.buttonOpacity, {
+    inputRange: [0, 1],
+    outputRange: [0, 100],
+    extrapolate: Extrapolate.CLAMP,
+  });
+
+  textInputOpacity = interpolate(this.buttonOpacity, {
+    inputRange: [0, 1],
+    outputRange: [1, 0],
+    extrapolate: Extrapolate.CLAMP,
+  });
+
   render() {
     return (
       <View style={styles.container}>
@@ -82,6 +100,26 @@ class LoginScreen extends Component {
               SIGN IN WITH FACEBOOK
             </Text>
           </Animated.View>
+          <Animated.View style={{
+            ...styles.authorizationContainer,
+            zIndex: this.textInputZIndex,
+            opacity: this.textInputOpacity,
+            transform: [{ translateY: this.textInputY }],
+          }}>
+            <TextInput
+              placeholder="EMAIL"
+              style={styles.textInput}
+              placeholderTextColor="black"
+            />
+            <TextInput
+              placeholder="PASSWORD"
+              style={styles.textInput}
+              placeholderTextColor="black"
+            />
+            <Animated.View style={styles.button}>
+              <Text style={styles.buttonText}>SIGN IN</Text>
+            </Animated.View>
+          </Animated.View>
         </View>
       </View>
     );
@@ -114,10 +152,28 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginVertical: 5,
+    shadowOffset: { width: 2, height: 2 },
+    shadowColor: 'black',
+    shadowOpacity: 0.2,
   },
   buttonText: {
     fontSize: 20,
     fontWeight: 'bold',
+  },
+  authorizationContainer: {
+    ...(StyleSheet.absoluteFill as {}),
+    height: height / 3,
+    top: 'auto',
+    justifyContent: 'center',
+  },
+  textInput: {
+    height: 50,
+    borderRadius: 50,
+    borderWidth: 0.5,
+    marginHorizontal: 20,
+    paddingLeft: 10,
+    marginVertical: 5,
+    borderColor: 'rgba(0, 0, 0, 0.2)',
   },
 });
 
