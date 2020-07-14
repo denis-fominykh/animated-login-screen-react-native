@@ -1,6 +1,4 @@
 import React, { FC, useState } from 'react';
-import { View } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
 import { Asset } from 'expo-asset';
 import { AppLoading } from 'expo';
 
@@ -35,12 +33,7 @@ const App: FC = () => {
     );
   }
 
-  return (
-    <View>
-      <LoginScreen />
-      <StatusBar style="auto" />
-    </View>
-  );
+  return <LoginScreen />;
 };
 
 export default App;
