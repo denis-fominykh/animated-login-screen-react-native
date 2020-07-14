@@ -1,5 +1,12 @@
 import React, { Component } from 'react';
-import { StyleSheet, Image, Text, View, TextInput, Dimensions } from 'react-native';
+import {
+  StyleSheet,
+  Image,
+  Text,
+  View,
+  TextInput,
+  Dimensions,
+} from 'react-native';
 import Animated from 'react-native-reanimated';
 import { State, TapGestureHandler } from 'react-native-gesture-handler';
 
@@ -15,6 +22,7 @@ const {
   Clock,
   interpolate,
   Extrapolate,
+  concat,
 } = Animated;
 const { width, height } = Dimensions.get('window');
 
@@ -27,6 +35,18 @@ class LoginScreen extends Component {
           cond(
             eq(state, State.END),
             set(this.buttonOpacity, runTiming(new Clock(), 1, 0)),
+          ),
+        ]),
+    },
+  ]);
+
+  onCloseState = event([
+    {
+      nativeEvent: ({ state }) =>
+        block([
+          cond(
+            eq(state, State.END),
+            set(this.buttonOpacity, runTiming(new Clock(), 0, 1)),
           ),
         ]),
     },
@@ -59,6 +79,12 @@ class LoginScreen extends Component {
   textInputOpacity = interpolate(this.buttonOpacity, {
     inputRange: [0, 1],
     outputRange: [1, 0],
+    extrapolate: Extrapolate.CLAMP,
+  });
+
+  rotateCross = interpolate(this.buttonOpacity, {
+    inputRange: [0, 1],
+    outputRange: [180, 360],
     extrapolate: Extrapolate.CLAMP,
   });
 
@@ -100,12 +126,26 @@ class LoginScreen extends Component {
               SIGN IN WITH FACEBOOK
             </Text>
           </Animated.View>
-          <Animated.View style={{
-            ...styles.authorizationContainer,
-            zIndex: this.textInputZIndex,
-            opacity: this.textInputOpacity,
-            transform: [{ translateY: this.textInputY }],
-          }}>
+          <Animated.View
+            style={{
+              ...styles.authorizationContainer,
+              zIndex: this.textInputZIndex,
+              opacity: this.textInputOpacity,
+              transform: [{ translateY: this.textInputY }],
+            }}
+          >
+            <TapGestureHandler onHandlerStateChange={this.onCloseState}>
+              <Animated.View style={styles.closeButton}>
+                <Animated.Text
+                  style={{
+                    ...styles.closeButtonText,
+                    transform: [{ rotate: concat(this.rotateCross, 'deg') }],
+                  }}
+                >
+                  X
+                </Animated.Text>
+              </Animated.View>
+            </TapGestureHandler>
             <TextInput
               placeholder="EMAIL"
               style={styles.textInput}
@@ -165,6 +205,23 @@ const styles = StyleSheet.create({
     height: height / 3,
     top: 'auto',
     justifyContent: 'center',
+  },
+  closeButton: {
+    height: 40,
+    width: 40,
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
+    top: -20,
+    left: width / 2 - 20,
+    shadowOffset: { width: 2, height: 2 },
+    shadowColor: 'black',
+    shadowOpacity: 0.2,
+  },
+  closeButtonText: {
+    fontSize: 15,
   },
   textInput: {
     height: 50,
